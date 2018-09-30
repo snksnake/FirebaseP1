@@ -1,7 +1,7 @@
 package maa.firebase1;
 
 import android.content.Intent;
-import android.nfc.Tag;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,14 +14,16 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ResultCodes;
+import com.firebase.ui.auth.provider.PhoneProvider;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.PhoneAuthProvider;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -60,15 +62,29 @@ public class MainActivity extends AppCompatActivity {
 
             if (usuario != null) {
                 Toast.makeText(this, getText(R.string.session_message), Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(this, MainActivity.class);
+
+                Uri photo = usuario.getPhotoUrl();
+                String mail = usuario.getEmail();
+                String provider = usuario.getProviderId();
+                String username = usuario.getDisplayName();
+                String uuid = usuario.getUid();
+
+                Intent intent = new Intent(this, UserInfo.class);
                 intent.addFlags(
                         Intent.FLAG_ACTIVITY_CLEAR_TOP |
                                 Intent.FLAG_ACTIVITY_NEW_TASK |
                                 Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.putExtra("username", username);
+                intent.putExtra("mail", mail);
+                intent.putExtra("provider", provider);
+                intent.putExtra("uuid", uuid);
+                intent.putExtra("photo", photo);
+
                 startActivity(intent);
             } else {
                 startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().setAvailableProviders(Arrays.asList(
                         new AuthUI.IdpConfig.Builder(EmailAuthProvider.PROVIDER_ID).build(),
+                        new AuthUI.IdpConfig.Builder(PhoneAuthProvider.PROVIDER_ID).build(),
                         new AuthUI.IdpConfig.Builder(GoogleAuthProvider.PROVIDER_ID).build())).setIsSmartLockEnabled(false).build(), RC_SIGN_IN);
             }
         }catch (Exception ex){
