@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Firebase1</string>
+    <string name="sign">Sign</string>
+    <string name="register">Register</string>
+    <string name="signui">Sign with UI</string>
+    <string name="session_message">Por favor, incie sesion</string>
 </resources>
